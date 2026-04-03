@@ -877,9 +877,8 @@ body {
 
 /* Floating Action Button (FAB) */
 .fab {
-    position: absolute;
-    bottom: 120px;
-    /* Higher up to be above the zoom controls */
+    position: fixed; /* مهم جداً */
+    bottom: calc(20px + env(safe-area-inset-bottom));
     right: 20px;
     width: 65px;
     height: 65px;
@@ -890,9 +889,7 @@ body {
     border: none;
     cursor: pointer;
     box-shadow: var(--shadow-lg);
-    z-index: 400;
-    /* Above map */
-    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    z-index: 1000; /* خليها أعلى */
     display: flex;
     align-items: center;
     justify-content: center;
