@@ -1,0 +1,16 @@
+{
+  "name": "Gas Finder Sudan",
+  "short_name": "GasFinder",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#2563EB",
+  "description": "Find gas availability and real-time prices in Sudan.",
+  "icons": [
+    {
+      "src": "logo.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

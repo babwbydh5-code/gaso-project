@@ -1,0 +1,24 @@
+{
+  "rules": {
+    "markers": {
+      ".read": true,
+      "$id": {
+        ".write": "auth != null",
+        ".validate": "newData.hasChildren(['name','company','status','price','lat','lng'])",
+        "votes": {
+          "voters": {
+            "$uid": {
+              ".write": "auth != null && auth.uid == $uid"
+            }
+          }
+        }
+      }
+    },
+    "users": {
+      "$uid": {
+        ".read": "auth != null && auth.uid == $uid",
+        ".write": "auth != null && auth.uid == $uid"
+      }
+    }
+  }
+}

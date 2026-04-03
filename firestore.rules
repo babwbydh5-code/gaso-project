@@ -1,0 +1,24 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Markers collection
+    match /stations/{stationId} {
+      // Anyone can see markers
+      allow read: if true;
+      
+      // Only logged in users can create markers
+      allow create: if request.auth != null;
+      
+      // Only the owner can update or delete their marker
+      // Note: We check both userId and reportedBy for backward compatibility
+      allow update, delete: if request.auth != null && 
+        (resource.data.userId == request.auth.uid || resource.data.reportedBy == request.auth.uid);
+    }
+    
+    // Users collection (for FCM tokens)
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+  }
+}
