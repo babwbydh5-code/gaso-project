@@ -232,6 +232,9 @@ window.addEventListener('appinstalled', (evt) => {
 const map = L.map('map', {
     zoomControl: false // Customizing zoom control location
 }).setView([15.5527, 32.5324], 13);
+L.control.zoom({
+    position: 'bottomleft'
+}).addTo(map);
 
 // Add OpenStreetMap tiles
 L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
