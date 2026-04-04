@@ -1088,7 +1088,7 @@ body {
 .floating-search-container {
     position: fixed;
     top: 0px;
-    right: 10px !important;
+    right: 25px !important;
     left: auto !important;
     margin-top: 100px;
     transform: none !important;
