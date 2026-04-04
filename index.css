@@ -100,11 +100,16 @@
     padding: 0;
 }
 
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
 body {
     font-family: var(--font-family);
     background-color: var(--bg-color);
     color: var(--text-primary);
-    overflow: auto;
+    overflow: hidden;
     /* App-like feel */
 }
 
@@ -112,8 +117,8 @@ body {
 #app-container {
     display: flex;
     flex-direction: column;
-    height: 100vh;
-    width: 100vw;
+    height: 100%;
+    width: 100%;
 }
 
 /* Header Navbar */
