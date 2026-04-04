@@ -351,7 +351,7 @@ body {
 }
 
 .map-section {
-    position: absolute;
+    position: relative;
     top: 0;
     left: 0;
     width: 100%;
@@ -1086,11 +1086,10 @@ body {
 }
 
 .floating-search-container {
-    position: fixed;
-    top: 0px;
-    right: 25px !important;
+    position: absolute !important;
+    top: 0px !important;
+    right: 0px !important;
     left: auto !important;
-    margin-top: 100px;
     transform: none !important;
     z-index: 1200;
     width: auto;
@@ -1215,9 +1214,10 @@ body {
 
 @media (max-width: 768px) {
     .floating-search-container {
-        top: 80px;
-        right: 10px;
-        left: auto;
+        position: absolute !important;
+        top: 10px !important;
+        right: 10px !important;
+        left: auto !important;
         width: auto;
         min-width: 60px;
     }
@@ -1282,4 +1282,11 @@ body {
     :root {
         --sidebar-width: 350px;
     }
+}
+/* Fix zoom position */
+.leaflet-control-zoom {
+    position: absolute !important;
+    bottom: 100px !important;
+    left: 15px !important;
+    z-index: 1500 !important;
 }

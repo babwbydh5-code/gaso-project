@@ -232,6 +232,7 @@ window.addEventListener('appinstalled', (evt) => {
 const map = L.map('map', {
     zoomControl: false // Customizing zoom control location
 }).setView([15.5527, 32.5324], 13);
+// 
 L.control.zoom({
     position: 'bottomleft'
 }).addTo(map);
@@ -264,10 +265,6 @@ map.on('locationerror', (e) => {
     console.error(e.message);
 });
 
-// Move zoom controls to bottom left to avoid overlap with floating bars
-L.control.zoom({
-    position: 'bottomright'
-}).addTo(map);
 
 // Custom Search Bar Logic (Improved with Autocomplete Suggestions)
 const mapSearchForm = document.getElementById('mapSearchForm');
