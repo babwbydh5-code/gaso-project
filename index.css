@@ -345,7 +345,8 @@ body {
     flex: 1;
     overflow-y: auto;
     overflow-x: hidden;
-    padding-bottom: 20px;
+    padding-bottom: 80px;
+    max-height: 100vh;
     scrollbar-width: thin;
     scrollbar-color: var(--border-color) transparent;
 }

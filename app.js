@@ -704,9 +704,6 @@ function renderList(stations) {
                             <span class="vote-label">Out</span>
                         </button>
                     </div>
-                    <button class="update-price-btn" onclick="event.stopPropagation(); openUpdatePriceModal('${station.id}', ${station.price})" style="flex-shrink: 0; padding: 0.8rem 1rem; border-radius: 12px;">
-                        <i class="fa-solid fa-pen"></i> Price
-                    </button>
                 </div>
             </div>
             <div class="station-footer">
