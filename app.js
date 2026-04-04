@@ -509,7 +509,7 @@ function renderMarkers(stations) {
                     <small style="color: #94a3b8; font-size: 0.7rem;"><i class="fa-regular fa-clock"></i> ${station.lastUpdated || 'Just now'}</small>
                     ${isOwner ? `
                         <div style="display: flex; gap: 10px;">
-                            <button onclick="window.editStation('${station.id}')" title="Edit / تعديل" style="background: var(--accent-color); color: white; border: none; padding: 4px 10px; border-radius: 6px; font-size: 0.7rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 4px;">
+                            <button onclick="editStation('${station.id}')" title="Edit / تعديل" style="background: var(--accent-color); color: white; border: none; padding: 4px 10px; border-radius: 6px; font-size: 0.7rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 4px;">
                                 <i class="fa-solid fa-pen"></i> Edit
                             </button>
                             <button onclick="window.deleteStation('${station.id}')" title="Delete / حذف" style="background: #ef4444; color: white; border: none; padding: 4px 10px; border-radius: 6px; font-size: 0.7rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 4px;">
@@ -602,7 +602,33 @@ window.deleteStation = async (id) => {
         alert("Failed to delete marker: " + error.message);
     }
 };
+window.editStation = function(id) {
+    console.log("Edit clicked", id);
 
+    if (!currentUser) {
+        alert("Please login first.");
+        return;
+    }
+
+    const station = gasStations.find(s => s.id === id);
+    if (!station) return;
+
+    document.getElementById('reportLocation').value = station.name;
+    document.getElementById('reportCompany').value = station.company;
+    document.getElementById('reportPrice').value = station.price;
+
+    const statusInput = document.querySelector(`input[name="status"][value="${station.status}"]`);
+    if (statusInput) statusInput.checked = true;
+
+    reportForm.dataset.editId = id;
+
+    selectedLocation = {
+        lat: station.lat,
+        lng: station.lng
+    };
+
+    reportModal.classList.add('active');
+};
 // Function to render stations list in sidebar
 function renderList(stations) {
     const listContainer = document.getElementById('stationsList');
