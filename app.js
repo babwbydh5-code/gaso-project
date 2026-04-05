@@ -131,7 +131,7 @@ function listenToStations() {
                     ...station,
                     voteCounts: counts,
                     userVote: userVote,
-                    lastUpdated: station.createdAt ? formatTime(new Date(Number(station.createdAt))) : "Just now"
+                    lastUpdated: station.createdAt ? formatTime(new Date(station.createdAt)) : "Just now"
                 });
             });
         }
@@ -168,7 +168,12 @@ function formatTime(date) {
     if (diff < 60) return "Just now";
     if (diff < 3600) return `${Math.floor(diff / 60)} mins ago`;
     if (diff < 86400) return `${Math.floor(diff / 3600)} hours ago`;
-    return date.toLocaleDateString();
+
+    const day = date.getDate();
+    const month = date.getMonth() + 1;
+    const year = date.getFullYear();
+
+    return `${day}/${month}/${year}`;
 }
 
 // Start listening for data
