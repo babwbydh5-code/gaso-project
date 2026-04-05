@@ -100,7 +100,10 @@ function t(key) {
 }
 
 // Function to listen for real-time updates from Realtime Database
+let islistening = false;
 function listenToStations() {
+    if (islistening) return;
+    islistening = true;
     if (!db) return;
 
     const markersRef = ref(db, "markers");
@@ -138,7 +141,8 @@ function listenToStations() {
 
         gasStations = updatedStations.sort((a, b) => {
             return b.createdAt - a.createdAt; // Newest first
-        })
+        });
+        if (gasStations.length === 0) return
         applyFilters(); // Re-render markers and list whenever data changes
     }, (error) => {
         console.error("Error listening to markers:", error);
@@ -645,22 +649,23 @@ window.editStation = function(id) {
 function renderList(stations) {
     const listContainer = document.getElementById('stationsList');
     const resultsCount = document.getElementById('resultsCount');
+    listContainer.innerHTML = ''; // ← هذا السطر الناقص
 
-    listContainer.innerHTML = `
+    /*listContainer.innerHTML = `
         <div style="text-align: center; padding: 2rem; color: var(--text-sec);">
             <i class="fa-solid fa-circle-notch fa-spin" style="font-size: 2rem; margin-bottom: 1rem;"></i>
             <p>Fetching gas stations...</p>
         </div>
     `;
     resultsCount.textContent = `Finding...`;
-
+*/
     if (stations.length === 0) {
-        listContainer.innerHTML = `
-            <div style="text-align: center; padding: 2rem; color: var(--text-sec);">
-                <i class="fa-solid fa-gas-pump" style="font-size: 2rem; margin-bottom: 1rem; opacity: 0.5;"></i>
-                <p>No stations found matching your criteria.</p>
-            </div>
-        `;
+    listContainer.innerHTML = `
+        <div style="text-align: center; padding: 2rem;">
+            <i class="fa-solid fa-circle-notch fa-spin"></i>
+            <p>Fetching gas stations...</p>
+        </div>
+    `;
         return;
     }
 
