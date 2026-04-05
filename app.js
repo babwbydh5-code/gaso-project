@@ -670,13 +670,19 @@ function renderList(stations) {
         const card = document.createElement('div');
         card.className = `station-card ${isCheapest ? 'cheapest-highlight' : ''}`;
         card.innerHTML = `
+        
             ${isCheapest ? '<div class="cheapest-badge"><i class="fa-solid fa-tag"></i> Cheapest / الأرخص</div>' : ''}
+            
             <div class="station-header">
+
                 <div class="station-title-group">
+                
                     <div class="station-name">${station.name}</div>
+
                     <div class="station-company">${t(station.company)}</div>
                 </div>
                 <div class="price-display">
+
                     <div class="price-val">${station.price}</div>
                     <div class="price-curr">SDG</div>
                 </div>
