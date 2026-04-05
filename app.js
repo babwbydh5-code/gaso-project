@@ -811,15 +811,12 @@ function applyFilters() {
     // Sort by Nearest primary and Cheapest secondary
     if (selectedLocation) {
         filtered.sort((a, b) => {
-            const distA = map.distance(selectedLocation, [a.lat, a.lng]);
-            const distB = map.distance(selectedLocation, [b.lat, b.lng]);
-            if (Math.abs(distA - distB) > 500) { // If distance difference > 500m
-                return distA - distB;
-            }
-            return a.price - b.price; // Else sort by price
+            return b.createdAt - a.createdAt; // Newest first
         });
     } else {
-        filtered.sort((a, b) => a.price - b.price); // Default to cheapest
+        filtered.sort((a, b) => {
+            return b.createdAt - a.createdAt; // Newest first
+        });
     }
 
     renderList(filtered);
