@@ -136,7 +136,9 @@ function listenToStations() {
             });
         }
 
-        gasStations = updatedStations;
+        gasStations = updatedStations.sort((a, b) => {
+            return b.createdAt - a.createdAt; // Newest first
+        })
         applyFilters(); // Re-render markers and list whenever data changes
     }, (error) => {
         console.error("Error listening to markers:", error);
