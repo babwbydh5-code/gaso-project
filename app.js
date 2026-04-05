@@ -222,7 +222,7 @@ if (installBtn) {
         // We've used the prompt, and can't use it again, so clear it
         deferredPrompt = null;
         // Hide the install button
-        installBtn.style.display = 'none';
+        installBtn.style.display = 'flex';
     });
 }
 
