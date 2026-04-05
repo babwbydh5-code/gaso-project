@@ -213,7 +213,7 @@ window.addEventListener('beforeinstallprompt', (e) => {
 if (installBtn) {
     installBtn.addEventListener('click', async () => {
         if (!deferredPrompt) {
-            alert("install not supported");
+            alert("install not available. Use browser menu");
             return;
         }
         // Show the install prompt
@@ -224,7 +224,7 @@ if (installBtn) {
         // We've used the prompt, and can't use it again, so clear it
         deferredPrompt = null;
         // Hide the install button
-        installBtn.style.display = 'flex';
+        installBtn.style.display = 'none';
     });
 }
 
