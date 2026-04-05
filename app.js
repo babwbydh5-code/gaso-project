@@ -523,16 +523,20 @@ function renderMarkers(stations) {
                 
                 <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-color); padding-top: 8px;">
                     <small style="color: #94a3b8; font-size: 0.7rem;"><i class="fa-regular fa-clock"></i> ${station.lastUpdated || 'Just now'}</small>
-                    ${isOwner ? `
-                        <div style="display: flex; gap: 10px;">
+                    <div style="display: flex; gap: 6px;">
+                        ${isOwner ? `
                             <button onclick="editStation('${station.id}')" title="Edit / تعديل" style="background: var(--accent-color); color: white; border: none; padding: 4px 10px; border-radius: 6px; font-size: 0.7rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 4px;">
                                 <i class="fa-solid fa-pen"></i> Edit
                             </button>
                             <button onclick="window.deleteStation('${station.id}')" title="Delete / حذف" style="background: #ef4444; color: white; border: none; padding: 4px 10px; border-radius: 6px; font-size: 0.7rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 4px;">
                                 <i class="fa-solid fa-trash-can"></i> Delete
                             </button>
-                        </div>
-                    ` : ''}
+                        ` : `
+                            <button onclick="window.openReportProblem('${station.id}')" title="Report Problem / إبلاغ عن مشكلة" style="background: transparent; color: #94a3b8; border: 1px solid var(--border-color); padding: 4px 10px; border-radius: 6px; font-size: 0.7rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 4px;">
+                                <i class="fa-solid fa-flag"></i> Report
+                            </button>
+                        `}
+                    </div>
                 </div>
             </div>
         `;
@@ -618,6 +622,72 @@ window.deleteStation = async (id) => {
         alert("Failed to delete marker: " + error.message);
     }
 };
+// ── REPORT PROBLEM FEATURE ───────────────────────────────────────────────────
+window.openReportProblem = (stationId) => {
+    if (!currentUser) {
+        showToast("❌ يرجى تسجيل الدخول أولاً / Please login first", "error");
+        authModal.classList.add('active');
+        return;
+    }
+    // Reset form
+    document.querySelectorAll('input[name="problemType"]').forEach(r => r.checked = false);
+    document.getElementById('problemNotes').value = '';
+    document.getElementById('reportProblemStationId').value = stationId;
+    document.getElementById('reportProblemModal').classList.add('active');
+};
+
+// Close report problem modal
+const closeReportProblemModalBtn = document.getElementById('closeReportProblemModal');
+const reportProblemModal = document.getElementById('reportProblemModal');
+
+if (closeReportProblemModalBtn) {
+    closeReportProblemModalBtn.onclick = () => reportProblemModal.classList.remove('active');
+}
+if (reportProblemModal) {
+    reportProblemModal.addEventListener('click', (e) => {
+        if (e.target === reportProblemModal) reportProblemModal.classList.remove('active');
+    });
+}
+
+// Submit report problem
+const submitReportProblemBtn = document.getElementById('submitReportProblemBtn');
+if (submitReportProblemBtn) {
+    submitReportProblemBtn.addEventListener('click', async () => {
+        const stationId = document.getElementById('reportProblemStationId').value;
+        const problemType = document.querySelector('input[name="problemType"]:checked')?.value;
+        const notes = document.getElementById('problemNotes').value.trim();
+
+        if (!problemType) {
+            showToast("❌ يرجى اختيار نوع المشكلة / Please select a problem type", "error");
+            return;
+        }
+
+        submitReportProblemBtn.disabled = true;
+        submitReportProblemBtn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> جاري الإرسال...';
+
+        try {
+            const reportsRef = ref(db, `reports/${stationId}`);
+            await push(reportsRef, {
+                stationId,
+                problemType,
+                notes: notes || null,
+                reportedBy: currentUser.uid,
+                reportedAt: Date.now()
+            });
+
+            reportProblemModal.classList.remove('active');
+            showToast("✅ تم إرسال البلاغ، شكراً! / Report submitted, thank you!", "success");
+        } catch (err) {
+            console.error("Error submitting report:", err);
+            showToast("❌ حدث خطأ أثناء الإرسال / Error submitting report", "error");
+        } finally {
+            submitReportProblemBtn.disabled = false;
+            submitReportProblemBtn.innerHTML = '<i class="fa-solid fa-flag"></i> Submit Report / إرسال البلاغ';
+        }
+    });
+}
+// ─────────────────────────────────────────────────────────────────────────────
+
 window.editStation = function(id) {
     console.log("Edit clicked", id);
 
@@ -649,7 +719,8 @@ window.editStation = function(id) {
 function renderList(stations) {
     const listContainer = document.getElementById('stationsList');
     const resultsCount = document.getElementById('resultsCount');
-    listContainer.innerHTML = ''; // ← هذا السطر الناقص
+
+    listContainer.innerHTML = ''; // Clear old content
 
     /*listContainer.innerHTML = `
         <div style="text-align: center; padding: 2rem; color: var(--text-sec);">
@@ -1298,18 +1369,6 @@ if (googleAuthBtn) {
     });
 }
 
-// Update Price Modal Logic
-window.openUpdatePriceModal = (stationId, currentPrice) => {
-    if (!currentUser) {
-        alert("Please login first to update prices.");
-        authModal.classList.add('active');
-        return;
-    }
-    document.getElementById('updateStationId').value = stationId;
-    document.getElementById('newPriceInput').value = currentPrice;
-    document.getElementById('updatePriceModal').classList.add('active');
-};
-
 // --- FIREBASE CLOUD MESSAGING (FCB/NOTIFICATIONS) ---
 const notificationBtn = document.querySelector('.notification-btn');
 
@@ -1469,4 +1528,3 @@ if (updatePriceFormElement) {
         }
     };
 }
- seedInitialData();

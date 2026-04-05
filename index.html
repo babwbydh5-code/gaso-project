@@ -2,6 +2,7 @@
 <html lang="en">
 
 <head>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>غاز السودان | خارطة توفر الوقود</title>
@@ -254,11 +255,74 @@
                         <i class="fa-regular fa-user" id="profileModalIcon"></i>
                     </div>
                     <h3 id="profileNameDisplay" style="margin-bottom: 0.5rem; color: var(--text-primary);">User</h3>
-                    <p id="profileEmailDisplay" style="color: var(--text-sec); margin-bottom: 1.5rem;">user@example.com
+                    <p id="profileEmailDisplay" style="color: var(--text-sec); margin-bottom: 1.5rem;"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="3144425443715449505c415d541f525e5c">[email&#160;protected]</a>
                     </p>
                     <button id="logoutBtn"
                         style="width: 100%; padding: 0.85rem; background-color: transparent; border: 1px solid var(--status-out); color: var(--status-out); border-radius: var(--radius-md); font-weight: 600; cursor: pointer; transition: all 0.2s;">Sign
                         Out</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Report Problem Modal -->
+        <div class="modal-overlay" id="reportProblemModal">
+            <div class="modal-content" style="max-width: 380px;">
+                <div class="modal-header">
+                    <h2>Report Problem / إبلاغ عن مشكلة</h2>
+                    <button class="close-modal" id="closeReportProblemModal"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="reportProblemStationId">
+                    <p style="font-size: 0.85rem; color: var(--text-sec); margin-bottom: 1rem;">ما المشكلة في هذه المحطة؟ / What's wrong with this station?</p>
+                    <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 1.2rem;">
+                        <label class="problem-option">
+                            <input type="radio" name="problemType" value="wrong_info"> 
+                            <div class="problem-card">
+                                <i class="fa-solid fa-circle-exclamation" style="color: var(--status-low);"></i>
+                                <div>
+                                    <b>Wrong Information / معلومات خاطئة</b>
+                                    <small>السعر أو الشركة غلط</small>
+                                </div>
+                            </div>
+                        </label>
+                        <label class="problem-option">
+                            <input type="radio" name="problemType" value="closed">
+                            <div class="problem-card">
+                                <i class="fa-solid fa-door-closed" style="color: var(--status-out);"></i>
+                                <div>
+                                    <b>Station Closed / المحطة مغلقة</b>
+                                    <small>المحطة مغلقة أو لم تعد موجودة</small>
+                                </div>
+                            </div>
+                        </label>
+                        <label class="problem-option">
+                            <input type="radio" name="problemType" value="duplicate">
+                            <div class="problem-card">
+                                <i class="fa-solid fa-copy" style="color: var(--accent-color);"></i>
+                                <div>
+                                    <b>Duplicate / مكررة</b>
+                                    <small>هذه المحطة مسجلة أكثر من مرة</small>
+                                </div>
+                            </div>
+                        </label>
+                        <label class="problem-option">
+                            <input type="radio" name="problemType" value="other">
+                            <div class="problem-card">
+                                <i class="fa-solid fa-comment-dots" style="color: var(--text-sec);"></i>
+                                <div>
+                                    <b>Other / أخرى</b>
+                                    <small>مشكلة أخرى</small>
+                                </div>
+                            </div>
+                        </label>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 1rem;">
+                        <label>Additional Notes / ملاحظات إضافية (اختياري)</label>
+                        <textarea id="problemNotes" placeholder="أي تفاصيل إضافية..." style="width: 100%; padding: 0.7rem; border-radius: var(--radius-md); border: 1px solid var(--border-color); background: var(--bg-color); color: var(--text-primary); font-size: 0.9rem; resize: vertical; min-height: 70px;"></textarea>
+                    </div>
+                    <button id="submitReportProblemBtn" class="primary-btn" style="background: #ef4444;">
+                        <i class="fa-solid fa-flag"></i> Submit Report / إرسال البلاغ
+                    </button>
                 </div>
             </div>
         </div>
@@ -284,16 +348,9 @@
         </div>
 
     </div>
-
-    <!-- Leaflet JS -->
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-
-    <!-- Geocoder JS -->
-    <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
-
-    <!-- Main JS (Module for Firebase) -->
-    <script type="module" src="app.js"></script>
-</body>
-
-</html>
+    <!-- Leaflet -->
+                   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+                       <!-- كودك -->
+                    <script type="module" src="app.js"></script>
+    </body>
+    </html>
