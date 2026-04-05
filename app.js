@@ -195,6 +195,9 @@ window.addEventListener('load', () => {
 // PWA Install Logic
 let deferredPrompt;
 const installBtn = document.getElementById('installBtn');
+if (installBtn) {
+    installBtn.style.display = 'flex';
+}
 
 window.addEventListener('beforeinstallprompt', (e) => {
     e.preventDefault();
@@ -205,11 +208,6 @@ window.addEventListener('beforeinstallprompt', (e) => {
         installBtn.style.justifyContent = 'center';
         installBtn.style.gap = '8px';
     }
-    setTimeout(() =>{
-        if (deferredPrompt){
-            deferredPrompt.prompt();
-        }
-    },3000);
 });
 
 if (installBtn) {
@@ -677,7 +675,7 @@ function renderList(stations) {
         card.innerHTML = `
         
             ${isCheapest ? '<div class="cheapest-badge"><i class="fa-solid fa-tag"></i> Cheapest / الأرخص</div>' : ''}
-
+            
             <div class="station-header">
 
                 <div class="station-title-group">
