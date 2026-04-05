@@ -131,7 +131,7 @@ function listenToStations() {
                     ...station,
                     voteCounts: counts,
                     userVote: userVote,
-                    lastUpdated: station.createdAt ? formatTime(new Date(station.createdAt)) : "Just now"
+                    lastUpdated: station.createdAt ? formatTime(new Date(Number(station.createdAt))) : "Just now"
                 });
             });
         }
