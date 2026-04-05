@@ -1242,7 +1242,9 @@ body {
     transition: background-color 0.2s ease;
     margin-top: 1rem;
 }
-
+#installBtn {
+    display: flex !important
+}
 .primary-btn:hover {
     background-color: var(--accent-hover);
 }
