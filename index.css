@@ -1239,9 +1239,15 @@ body {
     font-size: 1rem;
     font-weight: 600;
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    text-align: center;
     transition: background-color 0.2s ease;
     margin-top: 1rem;
 }
+
 .primary-btn:hover {
     background-color: var(--accent-hover);
 }
