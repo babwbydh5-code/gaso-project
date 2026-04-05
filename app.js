@@ -212,8 +212,10 @@ window.addEventListener('beforeinstallprompt', (e) => {
 
 if (installBtn) {
     installBtn.addEventListener('click', async () => {
-        if (!deferredPrompt) return;
-
+        if (!deferredPrompt) {
+            alert("install not supported");
+            return;
+        }
         // Show the install prompt
         deferredPrompt.prompt();
         // Wait for the user to respond to the prompt
