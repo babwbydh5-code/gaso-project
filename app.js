@@ -272,13 +272,18 @@ locateBtn.onAdd = function () {
 };
 locateBtn.addTo(map);
 
+// طلب الموقع تلقائياً عند تحميل الصفحة بصمت
+map.locate({ maxZoom: 16 });
+
 map.on('locationfound', (e) => {
     L.circle(e.latlng, e.accuracy).addTo(map);
     selectedLocation = e.latlng;
+    applyFilters(); // احسب المسافات بعد ما نعرف الموقع
 });
 
-map.on('locationerror', (e) => {
-    console.error(e.message);
+map.on('locationerror', () => {
+    // المستخدم رفض الإذن أو الموقع غير متاح — المسافة تبقى —
+    console.warn("Location not available");
 });
 
 
