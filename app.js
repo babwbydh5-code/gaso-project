@@ -53,6 +53,7 @@ try {
 
     window.auth = auth;
     // Setting persistence to LOCAL (persists even when browser is closed)
+    setPersistence(auth, browserLocalPersistence)
         .then(() => console.log("Auth persistence set to LOCAL"))
         .catch(err => console.error("Error setting persistence:", err));
 
