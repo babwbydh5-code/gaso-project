@@ -51,9 +51,8 @@ try {
     app = initializeApp(firebaseConfig);
     auth = getAuth(app);
 
-    window.auth =auth;
+    window.auth = auth;
     // Setting persistence to LOCAL (persists even when browser is closed)
-    setPersistence(auth, browserLocalPersistence)
         .then(() => console.log("Auth persistence set to LOCAL"))
         .catch(err => console.error("Error setting persistence:", err));
 
@@ -1162,6 +1161,7 @@ authForm.addEventListener('submit', async (e) => {
             if (name) await updateProfile(userCredential.user, { displayName: name });
             showToast("\u2705 تم إنشاء الحساب بنجاح!", "success");
         } else {
+            await setPersistence(auth, browserLocalPersistence);
             await signInWithEmailAndPassword(auth, email, password);
             showToast("\u2705 تم تسجيل الدخول بنجاح!", "success");
         }
