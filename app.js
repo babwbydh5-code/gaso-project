@@ -437,9 +437,6 @@ if (mapSearchForm && mapSearchInput && searchSuggestions) {
     }
 }
 
-// Track current markers on the map
-let currentMarkers = [];
-
 // Helper function to create custom Leaflet DivIcons
 function createCustomIcon(status) {
     return L.divIcon({
@@ -600,7 +597,8 @@ function showToast(message, type = "success") {
 // Function to delete a station
 window.deleteStation = async (id) => {
     if (!currentUser) {
-        alert("Please login first.");
+        showToast("❌ يرجى تسجيل الدخول أولاً", "error");
+        authModal.classList.add('active');
         return;
     }
 
@@ -608,18 +606,18 @@ window.deleteStation = async (id) => {
     if (!station) return;
 
     if (station.userId !== currentUser.uid && station.reportedBy !== currentUser.uid) {
-        alert("You can only delete your own markers.");
+        showToast("❌ يمكنك حذف محطاتك فقط", "error");
         return;
     }
 
-    if (!confirm("Are you sure you want to delete this marker?")) return;
+    if (!confirm("هل أنت متأكد من حذف هذه المحطة؟ / Are you sure?")) return;
 
     try {
         await remove(ref(db, "markers/" + id));
-        alert("Marker deleted successfully.");
+        showToast("✅ تم حذف المحطة بنجاح", "success");
     } catch (error) {
         console.error("Error deleting marker:", error);
-        alert("Failed to delete marker: " + error.message);
+        showToast("❌ فشل الحذف: " + error.message, "error");
     }
 };
 // ── REPORT PROBLEM FEATURE ───────────────────────────────────────────────────
@@ -692,7 +690,8 @@ window.editStation = function(id) {
     console.log("Edit clicked", id);
 
     if (!currentUser) {
-        alert("Please login first.");
+        showToast("❌ يرجى تسجيل الدخول أولاً", "error");
+        authModal.classList.add('active');
         return;
     }
 
@@ -720,16 +719,8 @@ function renderList(stations) {
     const listContainer = document.getElementById('stationsList');
     const resultsCount = document.getElementById('resultsCount');
 
-    listContainer.innerHTML = ''; // Clear old content
+    listContainer.innerHTML = '';
 
-    /*listContainer.innerHTML = `
-        <div style="text-align: center; padding: 2rem; color: var(--text-sec);">
-            <i class="fa-solid fa-circle-notch fa-spin" style="font-size: 2rem; margin-bottom: 1rem;"></i>
-            <p>Fetching gas stations...</p>
-        </div>
-    `;
-    resultsCount.textContent = `Finding...`;
-*/
     if (stations.length === 0) {
     listContainer.innerHTML = `
         <div style="text-align: center; padding: 2rem;">
@@ -749,7 +740,7 @@ function renderList(stations) {
         const isCheapest = station.status !== 'out' && station.price === minPrice;
 
         // Calculate distance if location is available
-        let distanceText = '~ 1 km';
+        let distanceText = '—';
         if (selectedLocation) {
             const dist = map.distance(selectedLocation, [station.lat, station.lng]) / 1000;
             distanceText = `${dist.toFixed(1)} km`;
@@ -884,16 +875,8 @@ function applyFilters() {
         return matchesCompany && matchesSearch;
     });
 
-    // Sort by Nearest primary and Cheapest secondary
-    if (selectedLocation) {
-        filtered.sort((a, b) => {
-            return b.createdAt - a.createdAt; // Newest first
-        });
-    } else {
-        filtered.sort((a, b) => {
-            return b.createdAt - a.createdAt; // Newest first
-        });
-    }
+    // Sort: newest first
+    filtered.sort((a, b) => b.createdAt - a.createdAt);
 
     renderList(filtered);
     renderMarkers(filtered);
@@ -936,13 +919,12 @@ const reportForm = document.getElementById('reportForm');
 
 reportBtn.addEventListener('click', () => {
     if (!currentUser) {
-        alert("Please login first to report gas availability.");
+        showToast("❌ يرجى تسجيل الدخول أولاً لإضافة محطة", "error");
         authModal.classList.add('active');
         return;
     }
 
-    // Start location selection mode
-    alert("Please click on the map to set the location of the gas station.");
+    showToast("📍 انقر على الخريطة لتحديد موقع المحطة", "success");
     document.getElementById('map').style.cursor = 'crosshair';
 
     const onMapClick = (e) => {
@@ -1192,24 +1174,14 @@ authForm.addEventListener('submit', async (e) => {
 logoutBtn.addEventListener('click', async () => {
     try {
         await signOut(auth);
-
-        // 👇 مهم جداً
         currentUser = null;
-
-        // تحديث الواجهة
         updateUIOnAuthChange(null);
-
-        // إغلاق المودال
         profileModal.classList.remove('active');
-
-        // إعادة ضبط الفورم
         authForm.reset();
-
-        // 👇 أهم خطوة (تحل المشكلة نهائياً)
-        location.reload();
-
+        showToast("✅ تم تسجيل الخروج بنجاح", "success");
     } catch (error) {
         console.error("Logout error:", error);
+        showToast("❌ حدث خطأ أثناء تسجيل الخروج", "error");
     }
 });
 

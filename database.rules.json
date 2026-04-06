@@ -14,6 +14,15 @@
         }
       }
     },
+    "reports": {
+      "$stationId": {
+        ".read": "auth != null",
+        "$reportId": {
+          ".write": "auth != null",
+          ".validate": "newData.hasChildren(['stationId','problemType','reportedBy','reportedAt'])"
+        }
+      }
+    },
     "users": {
       "$uid": {
         ".read": "auth != null && auth.uid == $uid",
