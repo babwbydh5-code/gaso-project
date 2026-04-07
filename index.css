@@ -225,7 +225,9 @@ body {
     background-color: var(--primary-color);
     border-bottom: none;
     box-shadow: var(--shadow-md);
-    z-index: 1000;
+    position: sticky;
+    top: 0;
+    z-index: 2500;
     flex-shrink: 0;
 }
 
