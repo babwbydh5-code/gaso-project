@@ -36,20 +36,23 @@
 <body>
 
     <header class="header">
-            <div class="logo" id="homeLogo" style="cursor: pointer;">
-                <img src="logo.png" alt="غاز السودان" id="appLogo">
-                <span>غاز <b>السودان</b></span>
+        <div class="logo" id="homeLogo" style="cursor: pointer;">
+            <img src="logo.png" alt="غاز السودان" id="appLogo">
+            <span>غاز <b>السودان</b></span>
+        </div>
+        <div class="header-actions">
+            <button class="dark-toggle-btn" id="darkToggleBtn" title="Dark Mode">
+                <i class="fa-solid fa-moon"></i>
+            </button>
+            <button class="icon-btn notification-btn" title="Smart Notifications">
+                <i class="fa-regular fa-bell"></i>
+                <span class="badge" id="notificationBadge" style="display: none;">0</span>
+            </button>
+            <div class="profile-pic" id="profileBtn" title="Login/Profile">
+                <i class="fa-regular fa-user"></i>
             </div>
-            <div class="header-actions">
-                <button class="icon-btn notification-btn" title="Smart Notifications">
-                    <i class="fa-regular fa-bell"></i>
-                    <span class="badge" id="notificationBadge" style="display: none;">0</span>
-                </button>
-                <div class="profile-pic" id="profileBtn" title="Login/Profile">
-                    <i class="fa-regular fa-user"></i>
-                </div>
-            </div>
-        </header>
+        </div>
+    </header>
     <div id="app-container">
         <!-- Header -->
         <!-- Main Content (Full Screen Map Background) -->
@@ -79,7 +82,19 @@
                             <h3>Filter by Company / تصفية</h3>
                             <div class="chips-container" id="companyFilters">
                                 <button class="chip active" data-company="All">All / الكل</button>
-                                <!-- Population via JS -->
+                            </div>
+                        </div>
+
+                        <div class="filter-group">
+                            <h3>Filter by Status / الحالة</h3>
+                            <div class="chips-container" id="statusFilters">
+                                <button class="chip active" data-status="All">All / الكل</button>
+                                <button class="chip status-chip available" data-status="available"><i
+                                        class="fa-solid fa-check-circle"></i> Available / متوفر</button>
+                                <button class="chip status-chip low" data-status="low"><i
+                                        class="fa-solid fa-triangle-exclamation"></i> Low / قليل</button>
+                                <button class="chip status-chip out" data-status="out"><i
+                                        class="fa-solid fa-xmark-circle"></i> Out / نفذ</button>
                             </div>
                         </div>
 
@@ -93,7 +108,15 @@
                     <div class="stations-list-container">
                         <div class="list-header">
                             <h2>Nearby Stations / المحطات</h2>
-                            <span class="results-count" id="resultsCount">0 found</span>
+                            <div style="display:flex; align-items:center; gap:8px;">
+                                <span class="results-count" id="resultsCount">0 found</span>
+                                <button class="sort-toggle" id="sortNearestBtn" title="Sort by Nearest">
+                                    <i class="fa-solid fa-location-arrow"></i> الأقرب
+                                </button>
+                                <button class="sort-toggle active-sort" id="sortToggleBtn" title="Sort">
+                                    <i class="fa-solid fa-arrow-down-short-wide"></i> الأحدث
+                                </button>
+                            </div>
                         </div>
                         <div class="stations-list" id="stationsList">
                             <!-- Stations will be populated here via JS -->
@@ -107,10 +130,9 @@
                         <p>1. Click the <b>+</b> button to report gas status. / انقر على زر الزائد للإبلاغ</p>
                         <p>2. Select the location on the map. / حدد الموقع على الخريطة</p>
                         <p>3. Fill in the details and submit. / املأ البيانات وأرسلها</p>
-                        <button id="installBtn" class="primary-btn"
-                         <i class="fa-solid fa-download"></i> 
+                        <button id="installBtn" class="primary-btn">
+                            <i class="fa-solid fa-download"></i>
                             Install App / تثبيت التطبيق
-
                         </button>
                     </div>
                 </div> <!-- End sidebar-content -->
@@ -246,7 +268,7 @@
         <div class="modal-overlay" id="profileModal">
             <div class="modal-content" style="max-width: 350px;">
                 <div class="modal-header">
-                    <h2>My Profile</h2>
+                    <h2>My Profile / ملفي الشخصي</h2>
                     <button class="close-modal" id="closeProfileModal"><i class="fa-solid fa-xmark"></i></button>
                 </div>
                 <div class="modal-body" style="text-align: center;">
@@ -254,12 +276,39 @@
                         style="width: 80px; height: 80px; margin: 0 auto 1rem auto; font-size: 2rem;">
                         <i class="fa-regular fa-user" id="profileModalIcon"></i>
                     </div>
-                    <h3 id="profileNameDisplay" style="margin-bottom: 0.5rem; color: var(--text-primary);">User</h3>
-                    <p id="profileEmailDisplay" style="color: var(--text-sec); margin-bottom: 1.5rem;"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="3144425443715449505c415d541f525e5c">[email&#160;protected]</a>
-                    </p>
+                    <h3 id="profileNameDisplay" style="margin-bottom: 0.25rem; color: var(--text-primary);">User</h3>
+                    <p id="profileEmailDisplay"
+                        style="color: var(--text-sec); margin-bottom: 1.2rem; font-size: 0.85rem;"></p>
+
+                    <!-- User Stats -->
+                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 1.2rem;">
+                        <div
+                            style="background: var(--bg-color); border-radius: var(--radius-md); padding: 10px 6px; border: 1px solid var(--border-color);">
+                            <div id="statStations"
+                                style="font-size: 1.4rem; font-weight: 800; color: var(--accent-color);">0</div>
+                            <div style="font-size: 0.65rem; color: var(--text-sec); margin-top: 2px;">محطات<br>Stations
+                            </div>
+                        </div>
+                        <div
+                            style="background: var(--bg-color); border-radius: var(--radius-md); padding: 10px 6px; border: 1px solid var(--border-color);">
+                            <div id="statVotes"
+                                style="font-size: 1.4rem; font-weight: 800; color: var(--status-available);">0</div>
+                            <div style="font-size: 0.65rem; color: var(--text-sec); margin-top: 2px;">تصويتات<br>Votes
+                            </div>
+                        </div>
+                        <div
+                            style="background: var(--bg-color); border-radius: var(--radius-md); padding: 10px 6px; border: 1px solid var(--border-color);">
+                            <div id="statReports"
+                                style="font-size: 1.4rem; font-weight: 800; color: var(--status-low);">0</div>
+                            <div style="font-size: 0.65rem; color: var(--text-sec); margin-top: 2px;">بلاغات<br>Reports
+                            </div>
+                        </div>
+                    </div>
+
                     <button id="logoutBtn"
-                        style="width: 100%; padding: 0.85rem; background-color: transparent; border: 1px solid var(--status-out); color: var(--status-out); border-radius: var(--radius-md); font-weight: 600; cursor: pointer; transition: all 0.2s;">Sign
-                        Out</button>
+                        style="width: 100%; padding: 0.85rem; background-color: transparent; border: 1px solid var(--status-out); color: var(--status-out); border-radius: var(--radius-md); font-weight: 600; cursor: pointer; transition: all 0.2s;">
+                        <i class="fa-solid fa-right-from-bracket"></i> Sign Out / خروج
+                    </button>
                 </div>
             </div>
         </div>
@@ -273,10 +322,11 @@
                 </div>
                 <div class="modal-body">
                     <input type="hidden" id="reportProblemStationId">
-                    <p style="font-size: 0.85rem; color: var(--text-sec); margin-bottom: 1rem;">ما المشكلة في هذه المحطة؟ / What's wrong with this station?</p>
+                    <p style="font-size: 0.85rem; color: var(--text-sec); margin-bottom: 1rem;">ما المشكلة في هذه
+                        المحطة؟ / What's wrong with this station?</p>
                     <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 1.2rem;">
                         <label class="problem-option">
-                            <input type="radio" name="problemType" value="wrong_info"> 
+                            <input type="radio" name="problemType" value="wrong_info">
                             <div class="problem-card">
                                 <i class="fa-solid fa-circle-exclamation" style="color: var(--status-low);"></i>
                                 <div>
@@ -318,7 +368,8 @@
                     </div>
                     <div class="form-group" style="margin-bottom: 1rem;">
                         <label>Additional Notes / ملاحظات إضافية (اختياري)</label>
-                        <textarea id="problemNotes" placeholder="أي تفاصيل إضافية..." style="width: 100%; padding: 0.7rem; border-radius: var(--radius-md); border: 1px solid var(--border-color); background: var(--bg-color); color: var(--text-primary); font-size: 0.9rem; resize: vertical; min-height: 70px;"></textarea>
+                        <textarea id="problemNotes" placeholder="أي تفاصيل إضافية..."
+                            style="width: 100%; padding: 0.7rem; border-radius: var(--radius-md); border: 1px solid var(--border-color); background: var(--bg-color); color: var(--text-primary); font-size: 0.9rem; resize: vertical; min-height: 70px;"></textarea>
                     </div>
                     <button id="submitReportProblemBtn" class="primary-btn" style="background: #ef4444;">
                         <i class="fa-solid fa-flag"></i> Submit Report / إرسال البلاغ
@@ -349,8 +400,9 @@
 
     </div>
     <!-- Leaflet -->
-                   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-                       <!-- كودك -->
-                    <script type="module" src="app.js"></script>
-    </body>
-    </html>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <!-- كودك -->
+    <script type="module" src="app.js"></script>
+</body>
+
+</html>

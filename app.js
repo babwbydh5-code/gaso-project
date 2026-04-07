@@ -45,6 +45,8 @@ let selectedLocation = null;
 let tempMarker = null;
 let fcmRegistration = null;
 let markersMap = new Map(); // Store Leaflet markers by station ID for efficient updates
+let currentStatusFilter = 'All';
+let currentSortType = 'latest'; // 'latest', 'oldest', 'nearest'
 
 try {
     // Initializing Firebase with real credentials
@@ -139,9 +141,7 @@ function listenToStations() {
             });
         }
 
-        gasStations = updatedStations.sort((a, b) => {
-            return b.createdAt - a.createdAt; // Newest first
-        });
+        gasStations = updatedStations;
         if (gasStations.length === 0) return
         applyFilters(); // Re-render markers and list whenever data changes
     }, (error) => {
@@ -248,10 +248,35 @@ window.addEventListener('appinstalled', (evt) => {
 const map = L.map('map', {
     zoomControl: false // Customizing zoom control location
 }).setView([15.5527, 32.5324], 13);
-// 
 L.control.zoom({
     position: 'bottomleft'
 }).addTo(map);
+
+// --- NIGHT MODE LOGIC ---
+const darkToggleBtn = document.getElementById('darkToggleBtn');
+const body = document.body;
+
+function updateDarkModeUI(isDark) {
+    if (isDark) {
+        body.classList.add('dark-mode');
+        if (darkToggleBtn) darkToggleBtn.innerHTML = '<i class="fa-solid fa-sun"></i>';
+    } else {
+        body.classList.remove('dark-mode');
+        if (darkToggleBtn) darkToggleBtn.innerHTML = '<i class="fa-solid fa-moon"></i>';
+    }
+}
+
+// Initial check
+const savedDarkMode = localStorage.getItem('darkMode') === 'true';
+updateDarkModeUI(savedDarkMode);
+
+if (darkToggleBtn) {
+    darkToggleBtn.addEventListener('click', () => {
+        const isDark = body.classList.toggle('dark-mode');
+        localStorage.setItem('darkMode', isDark);
+        updateDarkModeUI(isDark);
+    });
+}
 
 // Add OpenStreetMap tiles
 L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
@@ -723,6 +748,7 @@ window.editStation = function(id) {
 function renderList(stations) {
     const listContainer = document.getElementById('stationsList');
     const resultsCount = document.getElementById('resultsCount');
+    if (resultsCount) resultsCount.innerText = `${stations.length} found`;
 
     listContainer.innerHTML = '';
 
@@ -857,6 +883,69 @@ function setupDynamicUI() {
         opt.innerText = t(company);
         reportSelect.appendChild(opt);
     });
+
+    // 3. Setup Status Filters
+    const statusFilters = document.querySelectorAll('#statusFilters .chip');
+    statusFilters.forEach(btn => {
+        btn.onclick = () => {
+            statusFilters.forEach(c => c.classList.remove('active'));
+            btn.classList.add('active');
+            currentStatusFilter = btn.dataset.status;
+            applyFilters();
+        };
+    });
+
+    // 4. Setup Sort Toggle
+    const sortToggleBtn = document.getElementById('sortToggleBtn');
+    if (sortToggleBtn) {
+        sortToggleBtn.onclick = () => {
+            isNewestFirst = !isNewestFirst;
+            sortToggleBtn.innerHTML = isNewestFirst ? 
+                '<i class="fa-solid fa-arrow-down-short-wide"></i> الأحدث' : 
+                '<i class="fa-solid fa-arrow-up-wide-short"></i> الأقدم';
+            applyFilters();
+        };
+    }
+
+    // 5. Setup Nearest Sort Toggle
+    const sortNearestBtn = document.getElementById('sortNearestBtn');
+    if (sortNearestBtn) {
+        sortNearestBtn.onclick = () => {
+            if (!selectedLocation) {
+                showToast("📍 يرجى السماح بالوصول للموقع أولاً / Please enable location", "error");
+                map.locate({ setView: true, maxZoom: 16 });
+                return;
+            }
+            currentSortType = 'nearest';
+            
+            // Highlight active sort button
+            if (sortToggleBtn) sortToggleBtn.classList.remove('active-sort');
+            sortNearestBtn.classList.add('active-sort');
+            
+            applyFilters();
+        };
+    }
+
+    // Update sort toggle to handle type changes
+    if (sortToggleBtn) {
+        sortToggleBtn.onclick = () => {
+            if (currentSortType === 'nearest') {
+                currentSortType = 'latest';
+            } else {
+                currentSortType = currentSortType === 'latest' ? 'oldest' : 'latest';
+            }
+            
+            // UI Feedback
+            sortNearestBtn?.classList.remove('active-sort');
+            sortToggleBtn.classList.add('active-sort');
+            
+            sortToggleBtn.innerHTML = currentSortType === 'latest' ? 
+                '<i class="fa-solid fa-arrow-down-short-wide"></i> الأحدث' : 
+                '<i class="fa-solid fa-arrow-up-wide-short"></i> الأقدم';
+            
+            applyFilters();
+        };
+    }
 }
 
 // Call setup
@@ -873,15 +962,29 @@ function applyFilters() {
         // Company Filter
         let matchesCompany = currentFilter === 'All' || station.company === currentFilter;
 
+        // Status Filter
+        let matchesStatus = currentStatusFilter === 'All' || station.status === currentStatusFilter;
+
         // Search Filter
         let matchesSearch = station.name.toLowerCase().includes(currentSearch.toLowerCase()) ||
             station.company.toLowerCase().includes(currentSearch.toLowerCase());
 
-        return matchesCompany && matchesSearch;
+        return matchesCompany && matchesStatus && matchesSearch;
     });
 
-    // Sort: newest first
-    filtered.sort((a, b) => b.createdAt - a.createdAt);
+    // Sort: newest, oldest, or nearest
+    filtered.sort((a, b) => {
+        if (currentSortType === 'nearest' && selectedLocation) {
+            const distA = map.distance(selectedLocation, [a.lat, a.lng]);
+            const distB = map.distance(selectedLocation, [b.lat, b.lng]);
+            return distA - distB;
+        } else if (currentSortType === 'oldest') {
+            return (a.createdAt || 0) - (b.createdAt || 0);
+        } else {
+            // Default to 'latest'
+            return (b.createdAt || 0) - (a.createdAt || 0);
+        }
+    });
 
     renderList(filtered);
     renderMarkers(filtered);

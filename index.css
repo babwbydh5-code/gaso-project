@@ -1,15 +1,14 @@
 /* CSS Variables for Clean, Modern Theme */
 :root {
-    --primary-color: #2563EB; /* Bright Blue */
-    --accent-color: #2563EB; /* Blue 600 */
-    --accent-hover: #1D4ED8; /* Blue 700 */
+    --primary-color: #2563EB;
+    --accent-color: #2563EB;
+    --accent-hover: #1D4ED8;
     --bg-color: #F8FAFC;
     --card-bg: #FFFFFF;
     --text-primary: #1E293B;
     --text-sec: #64748B;
     --border-color: #E2E8F0;
 
-    /* Status Colors */
     --status-available: #10B981;
     --status-low: #F59E0B;
     --status-out: #EF4444;
@@ -27,6 +26,102 @@
     --sidebar-width: 400px;
     --sidebar-bg: #FFFFFF;
     --bg-card: #FFFFFF;
+}
+
+/* Dark Mode Variables */
+body.dark-mode {
+    --bg-color: #0F172A;
+    --card-bg: #1E293B;
+    --sidebar-bg: #1E293B;
+    --bg-card: #1E293B;
+    --text-primary: #F1F5F9;
+    --text-sec: #94A3B8;
+    --border-color: #334155;
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.4);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.5);
+}
+
+body.dark-mode .header {
+    background-color: #1E3A8A;
+}
+
+body.dark-mode .modal-content {
+    background: #1E293B;
+    color: var(--text-primary);
+}
+
+body.dark-mode .modal-overlay {
+    background: rgba(0,0,0,0.7);
+}
+
+body.dark-mode .station-card {
+    background: var(--card-bg);
+    border-color: var(--border-color);
+}
+
+body.dark-mode .sidebar {
+    background: var(--sidebar-bg);
+}
+
+body.dark-mode input,
+body.dark-mode select,
+body.dark-mode textarea {
+    background: #0F172A;
+    color: var(--text-primary);
+    border-color: var(--border-color);
+}
+
+body.dark-mode .search-box {
+    background: #1E293B;
+    border-color: var(--border-color);
+}
+
+body.dark-mode .search-box input {
+    background: transparent;
+    color: var(--text-primary);
+}
+
+body.dark-mode .chip {
+    background: #1E293B;
+    color: var(--text-sec);
+    border-color: var(--border-color);
+}
+
+body.dark-mode .chip.active {
+    background: var(--accent-color);
+    color: white;
+}
+
+body.dark-mode .premium-search-bar {
+    background: #1E293B;
+    border-color: var(--border-color);
+}
+
+body.dark-mode .leaflet-popup-content-wrapper,
+body.dark-mode .leaflet-popup-tip {
+    background: #1E293B;
+    color: var(--text-primary);
+}
+
+/* Dark mode toggle button */
+.dark-toggle-btn {
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    color: white;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    transition: background 0.2s;
+}
+
+.dark-toggle-btn:hover {
+    background: rgba(255,255,255,0.2);
 }
 
 /* Leaflet Popup Styling */
@@ -130,9 +225,7 @@ body {
     background-color: var(--primary-color);
     border-bottom: none;
     box-shadow: var(--shadow-md);
-    position: sticky;
-    top: 0;
-    z-index: 2500;
+    z-index: 1000;
     flex-shrink: 0;
 }
 
@@ -1352,4 +1445,42 @@ body {
 
 .problem-option:hover .problem-card {
     border-color: var(--accent-color);
+}
+/* Status filter chips */
+.chip.status-chip.available.active { background: var(--status-available); color: white; border-color: var(--status-available); }
+.chip.status-chip.low.active { background: var(--status-low); color: white; border-color: var(--status-low); }
+.chip.status-chip.out.active { background: var(--status-out); color: white; border-color: var(--status-out); }
+.chip.status-chip { display: flex; align-items: center; gap: 5px; }
+
+/* Sort toggle */
+.sort-toggle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px;
+    background: var(--bg-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    font-size: 0.78rem;
+    color: var(--text-sec);
+    cursor: pointer;
+    font-family: var(--font-family);
+    font-weight: 600;
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+.sort-toggle:hover { border-color: var(--accent-color); color: var(--accent-color); }
+.sort-toggle.active-sort { border-color: var(--accent-color); color: var(--accent-color); background: rgba(37,99,235,0.05); }
+
+/* Stale station warning */
+.stale-warning {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.68rem;
+    color: var(--status-low);
+    background: rgba(245,158,11,0.1);
+    border-radius: 4px;
+    padding: 2px 6px;
+    margin-top: 4px;
 }
